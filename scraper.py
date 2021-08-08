@@ -2,14 +2,18 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import requests,json,time
 from random import randint
+# soup.find_all('a', {'href': re.compile(r'crummy\.com/')})
+import re
 
 if __name__ == "__main__":
     count = 1
     website = "https://hackr.io/"
     html_content = urlopen(website)
     soup_data = BeautifulSoup(html_content, 'lxml')
-    urls = soup_data.findAll('a', attrs={'class': ' topic-grid-item js-topic-grid-item'})
+    urls = soup_data.findAll('a', attrs={'class': 'topic-grid-item js-topic-grid-item'})
+    print(urls)
     for data in urls:
+#         import pdb;pdb.set_trace()
         time.sleep(randint(0, 4))
         # Get HTML content of the URL
         url = data.attrs["href"]
@@ -17,10 +21,13 @@ if __name__ == "__main__":
         html = urlopen(url)
         soup = BeautifulSoup(html, 'lxml')
         # find results from the table structure
-        table = soup.findAll('div', attrs={'class': 'tut-list tut-row '})
+#         table = soup.findAll('div', attrs={'class': 'tut-list tut-row'})
+        import pdb;pdb.set_trace()
+        table = soup.findAll('div', attrs={'class': re.compile(r'tut-list tut-row')})
 
 
         for result in table:
+            import pdb;pdb.set_trace()
             d1 = result.find('a', {'class': 'js-details'})
             d2 = result.find('span', {'class': 'count'})
             d3 = result.findAll('span', attrs={'class': 'label label-xs label-primary'})

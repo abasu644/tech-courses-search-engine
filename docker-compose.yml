@@ -1,22 +1,37 @@
-version: '3'
+version: "3.7"
+
 services:
   elasticsearch:
-    image: "elasticsearch:5"
-    networks:
-      - frontend
-    restart: always
-    volumes:
-      - ./ES_DATA:/usr/share/elasticsearch/data
+    image: docker.elastic.co/elasticsearch/elasticsearch:${VERSION:-7.13.4}
+    hostname: elasticsearch
     environment:
+      - cluster.name=elasticsearch
+      - bootstrap.memory_lock=true
       - discovery.type=single-node
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    healthcheck:
-      test: ["CMD", "curl","-s" ,"-f", "http://localhost:9200/_cat/health"]
-      retries: 6
+      # - http.publish_host=localhost
+      # - http.host=0.0.0.0
+      # - transport.host=127.0.0.1
+      # - network.host=_local_
+      - network.publish_host=127.0.0.1
+      - logger.org.elasticsearch=warn
+      - xpack.security.enabled=false
+      - path.repo=/usr/share/elasticsearch/backup
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+#     ulimits:
+#       nproc: 65536
+#       nofile:
+#         soft: 65536
+#         hard: 65536
+#       memlock:
+#         soft: -1
+#         hard: -1
+    volumes:
+      - ./data/backup:/usr/share/elasticsearch/backup
     ports:
-      - "9200:9200"
-      - "9300:9300"
+      - 9200:9200
 
+
+    
   hacker:
     image: "dineshsonachalam/hacker:1.0.0"
     networks:

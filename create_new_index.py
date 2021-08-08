@@ -19,7 +19,7 @@ if __name__ == "__main__":
             "number_of_shards": 1
           },
           "mappings": {
-            "tutorials":{
+            
                 "_source": {
                     "enabled": True
                 },
@@ -40,16 +40,17 @@ if __name__ == "__main__":
                         "type":"text"
                     }
                 }
-            }
-
+            
           }
     }
     payload = json.dumps(payload)
+    print(payload)
     headers = {
             'Content-Type': "application/json",
             'cache-control': "no-cache"
         }
     response = requests.request("PUT", url, data=payload, headers=headers)
+    print(response.status_code,response.text)
     if (response.status_code == 200):
         print("2. Created a new template: search_engine_template")
 
@@ -73,9 +74,8 @@ if __name__ == "__main__":
 
     payload = {
       "mappings": {
-        "titles" : {
           "properties" : {
-            "title" : { "type" : "string" },
+            "title" : { "type" : "text" },
             "title_suggest" : {
               "type" :     "completion",
               "analyzer" :  "standard",
@@ -85,11 +85,12 @@ if __name__ == "__main__":
             }
           }
         }
-      }
     }
     payload = json.dumps(payload)
+    print("autocomplete---------------------")
+    print(payload)
     response = requests.request("PUT", url, data=payload, headers=headers)
-
+    print(response.status_code,response.text)
     if(response.status_code==200):
         print("6. Created a new index: autocomplete")
 
